@@ -112,7 +112,7 @@ namespace MQTTDesktopProgram
             comboBox.Enabled = false;
         }
 
-        public void GetArduinoValue()    //  Get sensor values (temperature and gas) from Arduino
+        public void GetArduinoValue()    //  Get sensor value from Arduino
         {
             while (serialPort.IsOpen)
             {
@@ -126,84 +126,64 @@ namespace MQTTDesktopProgram
                 }
                 catch (Exception exe)
                 {
-                    MessageBox.Show(exe.Message, "Virhe");
+                    //MessageBox.Show(exe.Message, "Virhe");
                 }
             }
         }
 
         public void CheckIfValidValue()
         {
-            int num = 0;
-            char invalid = '.';
+            distance = (float)Convert.ToDouble(value);
 
-            try
+            if (distance < 2 || distance > 400)
             {
-                for (int i = 0; i < value.Length; i++)
-                {
-                    if (i == invalid)
-                    {
-                        num++;
-                        if (num == 2)
-                        {
-                            textBox.Text = "";
-                            return;
-                        }
-                    }
-                }
-
-                distance = (float)Convert.ToDouble(value);
-
-                if ( distance < 2 || distance > 400)
-                {
-                    textBox.Text = "";
-                    MessageBox.Show("Luku on mittausalueen ulkopuolella!", "Virhe");
-                }
-            }
-            catch(Exception)
-            {
-
+                textBox.Text = "";
+                MessageBox.Show("Luku on mittausalueen ulkopuolella!", "Virhe");
             }
         }
 
-        private static async Task ConnectToBroker()
+        private async Task ConnectToBroker()
         {
             var mqttFactory = new MqttFactory();
             IMqttClient client = mqttFactory.CreateMqttClient();
 
             var messageBuilder = new MqttClientOptionsBuilder()
                 .WithClientId(Guid.NewGuid().ToString())
-                .WithTcpServer("test.mosquitto.org", 1883)
-                //.WithKeepAliveSendInterval((TimeSpan.FromSeconds(5))
+                .WithTcpServer("broker.hivemq.com", 1883)
                 .WithCleanSession()
                 .Build();
 
             client.UseConnectedHandler(e =>
             {
-                MessageBox.Show("Connected successfully with MQTT Brokers.");
+                MessageBox.Show("Yhdistetty onnistuneesti.");
             });
 
             client.UseDisconnectedHandler(e =>
             {
-                MessageBox.Show("Disconnected from MQTT Brokers.");
+                MessageBox.Show("Yhteys katkaistu.");
             });
 
             await client.ConnectAsync(messageBuilder);
 
-            await PublishAsync(client);
-        }
-
-        private static async Task PublishAsync(IMqttClient client)
-        {
-            var mc = new Form1();
-            string payload = mc.value;
-
             if (client.IsConnected)
             {
-                await client.PublishAsync(new MqttApplicationMessageBuilder()
-                    .WithTopic("arduino/sensor/distance")
-                    .WithPayload(payload)
-                    .WithQualityOfServiceLevel(0)
-                    .Build());
+                try
+                {
+                    while (true)
+                    {
+                        await client.PublishAsync(new MqttApplicationMessageBuilder()
+                            .WithTopic("arduino/sensor/distance")
+                            .WithPayload(time.ToString() + ' ' + value)
+                            .WithQualityOfServiceLevel(0)
+                            .Build());
+
+                        await Task.Delay(1000);
+                    }
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message, "Virhe");
+                }
             }
         }
     }
