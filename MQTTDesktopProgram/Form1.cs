@@ -20,7 +20,10 @@ namespace MQTTDesktopProgram
         private SerialPort serialPort;
         DateTime time;
         string value;
-        public float distance;
+        bool isValid;
+        bool isRightFormat;
+        float distance;
+        double num;
 
         public Form1()
         {
@@ -34,6 +37,7 @@ namespace MQTTDesktopProgram
             {
                 comboBox.Items.Add(port);
             }
+            startButton.Enabled = false;
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -43,7 +47,6 @@ namespace MQTTDesktopProgram
                 serialPort.Dispose();
                 serialPort.Close();
             }
-            //isSaving = false;
             Application.Exit();
         }
 
@@ -62,6 +65,7 @@ namespace MQTTDesktopProgram
                     comboBox.Enabled = false;
                     Thread t = new Thread(GetArduinoValue);
                     t.Start();
+                    startButton.Enabled = true;
                 }
                 catch (Exception ex)
                 {
@@ -74,7 +78,6 @@ namespace MQTTDesktopProgram
             }
 
         }
-
 
         private async void startButton_Click(object sender, EventArgs e)
         {
@@ -97,7 +100,7 @@ namespace MQTTDesktopProgram
          * 
          */
 
-        public void CreateSerialPortConnection()    //Open serial connections
+        public void CreateSerialPortConnection()    //  Open serial connection
         {
             serialPort = new SerialPort();
             serialPort.PortName = comboBox.SelectedItem.ToString();
@@ -120,34 +123,73 @@ namespace MQTTDesktopProgram
                 {
                     value = serialPort.ReadLine();
                     time = DateTime.Now;
+                    CheckIfError();
                     CheckIfValidValue();
-                    textBox.Text = "\r\n" + "Aika: " + time.ToString(("dd-MM-yyyy HH:mm:ss")) + "\r\n\r\n" + "Etäisyys: " + value.ToString();
+                    if(isRightFormat && isValid)
+                    {
+                        textBox.Text = "\r\n" + "Aika: " + time.ToString(("dd-MM-yyyy HH:mm:ss")) + "\r\n\r\n" + "Etäisyys: " + num.ToString();
+                    }
+                    
                     // Thread.Sleep(1000);
                 }
-                catch (Exception exe)
+                catch (Exception)
                 {
-                    //MessageBox.Show(exe.Message, "Virhe");
+                    
                 }
             }
+        }
+
+        public void CheckIfError()
+        {
+            try
+            {
+                int num = 0;
+                char invalid = '.';
+                for (int i = 0; i < value.Length; i++)
+                {
+                    if (value[i] == invalid)
+                    {
+                        num++;
+                        if (num == 2)
+                        {
+                            textBox.Text = "";
+                            isRightFormat = false;
+                            MessageBox.Show("Tästä löytyi pisteitä liikaa", "Virhe");
+                        }
+                    }
+                }
+
+                isRightFormat = true;
+            }
+            catch (Exception)
+            {
+
+            }
+
         }
 
         public void CheckIfValidValue()
         {
             distance = (float)Convert.ToDouble(value);
+            num = Math.Round(distance, 2);
 
-            if (distance < 2 || distance > 400)
+            if (num < 2 || num > 400)
             {
                 textBox.Text = "";
                 MessageBox.Show("Luku on mittausalueen ulkopuolella!", "Virhe");
+                isValid = false;
             }
+
+            isValid = true;
         }
 
         private async Task ConnectToBroker()
         {
+            startButton.Enabled = false;
             var mqttFactory = new MqttFactory();
             IMqttClient client = mqttFactory.CreateMqttClient();
 
-            var messageBuilder = new MqttClientOptionsBuilder()
+            var options = new MqttClientOptionsBuilder()
                 .WithClientId(Guid.NewGuid().ToString())
                 .WithTcpServer("broker.hivemq.com", 1883)
                 .WithCleanSession()
@@ -163,7 +205,9 @@ namespace MQTTDesktopProgram
                 MessageBox.Show("Yhteys katkaistu.");
             });
 
-            await client.ConnectAsync(messageBuilder);
+            await client.ConnectAsync(options);
+
+            //  Publish message to Broker
 
             if (client.IsConnected)
             {
@@ -172,8 +216,8 @@ namespace MQTTDesktopProgram
                     while (true)
                     {
                         await client.PublishAsync(new MqttApplicationMessageBuilder()
-                            .WithTopic("arduino/sensor/distance")
-                            .WithPayload(time.ToString() + ' ' + value)
+                            .WithTopic("arduino/sensor/HC-SR04")
+                            .WithPayload(time.ToString() + ',' + num)
                             .WithQualityOfServiceLevel(0)
                             .Build());
 

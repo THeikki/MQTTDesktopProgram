@@ -69,7 +69,7 @@ namespace MQTTDesktopProgram
             // 
             // quitButton
             // 
-            this.quitButton.Location = new System.Drawing.Point(434, 317);
+            this.quitButton.Location = new System.Drawing.Point(316, 272);
             this.quitButton.Name = "quitButton";
             this.quitButton.Size = new System.Drawing.Size(75, 23);
             this.quitButton.TabIndex = 4;
@@ -91,7 +91,7 @@ namespace MQTTDesktopProgram
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(534, 367);
+            this.ClientSize = new System.Drawing.Size(491, 358);
             this.Controls.Add(this.startButton);
             this.Controls.Add(this.quitButton);
             this.Controls.Add(this.textBox);
