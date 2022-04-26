@@ -115,7 +115,7 @@ namespace MQTTDesktopProgram
             comboBox.Enabled = false;
         }
 
-        public void GetArduinoValue()    //  Get sensor value from Arduino
+        public void GetArduinoValue()    //  Get HC-SR04 value from Arduino
         {
             while (serialPort.IsOpen)
             {
@@ -128,8 +128,7 @@ namespace MQTTDesktopProgram
                     if(isRightFormat && isValid)
                     {
                         textBox.Text = "\r\n" + "Aika: " + time.ToString(("dd-MM-yyyy HH:mm:ss")) + "\r\n\r\n" + "Etäisyys: " + num.ToString();
-                    }
-                    
+                    }   
                     // Thread.Sleep(1000);
                 }
                 catch (Exception)
@@ -154,7 +153,7 @@ namespace MQTTDesktopProgram
                         {
                             textBox.Text = "";
                             isRightFormat = false;
-                            MessageBox.Show("Tästä löytyi pisteitä liikaa", "Virhe");
+                            //MessageBox.Show("Tästä löytyi pisteitä liikaa", "Virhe");
                         }
                     }
                 }
@@ -192,17 +191,18 @@ namespace MQTTDesktopProgram
             var options = new MqttClientOptionsBuilder()
                 .WithClientId(Guid.NewGuid().ToString())
                 .WithTcpServer("broker.hivemq.com", 1883)
+                //.WithTcpServer("test.mosquitto.org", 1883)
                 .WithCleanSession()
                 .Build();
 
             client.UseConnectedHandler(e =>
             {
-                MessageBox.Show("Yhdistetty onnistuneesti.");
+                MessageBox.Show("Yhdistetty Broker:iin onnistuneesti.");
             });
 
             client.UseDisconnectedHandler(e =>
             {
-                MessageBox.Show("Yhteys katkaistu.");
+                MessageBox.Show("Yhteys Broker:iin katkaistu.");
             });
 
             await client.ConnectAsync(options);
