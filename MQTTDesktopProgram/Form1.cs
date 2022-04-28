@@ -20,6 +20,7 @@ namespace MQTTDesktopProgram
         private SerialPort serialPort;
         DateTime time;
         string value;
+        bool quitIsPressed;
         bool isValid;
         bool isRightFormat;
         float distance;
@@ -86,12 +87,12 @@ namespace MQTTDesktopProgram
 
         private void quitButton_Click(object sender, EventArgs e)
         {
+            quitIsPressed = true;
             if (serialPort != null)
             {
                 serialPort.Dispose();
                 serialPort.Close();
             }
-
             Application.Exit();
         }
 
@@ -125,15 +126,30 @@ namespace MQTTDesktopProgram
                     time = DateTime.Now;
                     CheckIfError();
                     CheckIfValidValue();
-                    if(isRightFormat && isValid)
+                    if (isRightFormat && isValid)
                     {
                         textBox.Text = "\r\n" + "Aika: " + time.ToString(("dd-MM-yyyy HH:mm:ss")) + "\r\n\r\n" + "Etäisyys: " + num.ToString();
-                    }   
+                    }
                     // Thread.Sleep(1000);
                 }
                 catch (Exception)
                 {
-                    
+                    if(!serialPort.IsOpen)
+                    {
+                        connectButton.Text = "EI YHTEYTTÄ";
+                        connectButton.BackColor = Color.MistyRose;
+                        startButton.Enabled = false;
+                        //textBox.Text = "\r\n" + "Yhteys Arduinoon on katkennut" + "\r\n\r\n" + "Käynnistä ohjelma uudelleen";
+                        textBox.Text = "";
+                        if (quitIsPressed == true)
+                        {
+                            textBox.Text = "";
+                        }
+                        else
+                        {
+                            MessageBox.Show("* Yhteys Arduinoon on katkennut\n\n* Käynnistä ohjelma uudelleen", "Virhe");
+                        }
+                    }
                 }
             }
         }
@@ -169,17 +185,24 @@ namespace MQTTDesktopProgram
 
         public void CheckIfValidValue()
         {
-            distance = (float)Convert.ToDouble(value);
-            num = Math.Round(distance, 2);
-
-            if (num < 2 || num > 400)
+            try
             {
-                textBox.Text = "";
-                MessageBox.Show("Luku on mittausalueen ulkopuolella!", "Virhe");
-                isValid = false;
-            }
+                distance = (float)Convert.ToDouble(value);
+                num = Math.Round(distance, 2);
 
-            isValid = true;
+                if (num < 2 || num > 400)
+                {
+                    textBox.Text = "";
+                    //MessageBox.Show("Luku on mittausalueen ulkopuolella!", "Virhe");
+                    isValid = false;
+                }
+
+                isValid = true;
+            }
+            catch (Exception)
+            {
+
+            }
         }
 
         private async Task ConnectToBroker()
@@ -191,7 +214,6 @@ namespace MQTTDesktopProgram
             var options = new MqttClientOptionsBuilder()
                 .WithClientId(Guid.NewGuid().ToString())
                 .WithTcpServer("broker.hivemq.com", 1883)
-                //.WithTcpServer("test.mosquitto.org", 1883)
                 .WithCleanSession()
                 .Build();
 
@@ -213,7 +235,7 @@ namespace MQTTDesktopProgram
             {
                 try
                 {
-                    while (true)
+                    while (serialPort.IsOpen)
                     {
                         await client.PublishAsync(new MqttApplicationMessageBuilder()
                             .WithTopic("arduino/sensor/HC-SR04")
@@ -226,7 +248,7 @@ namespace MQTTDesktopProgram
                 }
                 catch (Exception e)
                 {
-                    MessageBox.Show(e.Message, "Virhe");
+                   MessageBox.Show(e.Message, "Virhe");
                 }
             }
         }
