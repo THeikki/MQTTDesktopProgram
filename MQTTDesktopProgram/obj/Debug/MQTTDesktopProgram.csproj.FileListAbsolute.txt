@@ -9,3 +9,4 @@ C:\Users\Omistaja\MQTTDesktopProgram\MQTTDesktopProgram\obj\Debug\MQTTDesktopPro
 C:\Users\Omistaja\MQTTDesktopProgram\MQTTDesktopProgram\obj\Debug\MQTTDesktopProgram.csproj.CopyComplete
 C:\Users\Omistaja\MQTTDesktopProgram\MQTTDesktopProgram\obj\Debug\MQTTDesktopProgram.exe
 C:\Users\Omistaja\MQTTDesktopProgram\MQTTDesktopProgram\obj\Debug\MQTTDesktopProgram.pdb
+C:\Users\Omistaja\MQTTDesktopProgram\MQTTDesktopProgram\obj\Debug\MQTTDesktopProgram.csproj.AssemblyReference.cache

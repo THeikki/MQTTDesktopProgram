@@ -139,7 +139,6 @@ namespace MQTTDesktopProgram
                         connectButton.Text = "EI YHTEYTTÄ";
                         connectButton.BackColor = Color.MistyRose;
                         startButton.Enabled = false;
-                        //textBox.Text = "\r\n" + "Yhteys Arduinoon on katkennut" + "\r\n\r\n" + "Käynnistä ohjelma uudelleen";
                         textBox.Text = "";
                         if (quitIsPressed == true)
                         {
@@ -235,7 +234,7 @@ namespace MQTTDesktopProgram
             {
                 try
                 {
-                    while (serialPort.IsOpen)
+                    while (client.IsConnected && serialPort.IsOpen)
                     {
                         await client.PublishAsync(new MqttApplicationMessageBuilder()
                             .WithTopic("arduino/sensor/HC-SR04")
@@ -248,7 +247,7 @@ namespace MQTTDesktopProgram
                 }
                 catch (Exception e)
                 {
-                   MessageBox.Show(e.Message, "Virhe");
+                    MessageBox.Show(e.Message, "Virhe");
                 }
             }
         }
