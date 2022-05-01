@@ -192,7 +192,6 @@ namespace MQTTDesktopProgram
                 if (num < 2 || num > 400)
                 {
                     textBox.Text = "";
-                    //MessageBox.Show("Luku on mittausalueen ulkopuolella!", "Virhe");
                     isValid = false;
                 }
 
