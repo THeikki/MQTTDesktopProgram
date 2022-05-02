@@ -108,6 +108,8 @@ namespace MQTTDesktopProgram
             serialPort.BaudRate = 9600;
             serialPort.Parity = Parity.None;
             serialPort.DataBits = 8;
+            serialPort.ReadTimeout = 2000;
+            serialPort.WriteTimeout = 2000;
             serialPort.StopBits = StopBits.One;
             serialPort.Open();
             connectButton.Text = "YHDISTETTY";
@@ -134,20 +136,17 @@ namespace MQTTDesktopProgram
                 }
                 catch (Exception)
                 {
-                    if(!serialPort.IsOpen)
+                    connectButton.Text = "EI YHTEYTTÄ";
+                    connectButton.BackColor = Color.MistyRose;
+                    startButton.Enabled = false;
+                    textBox.Text = "";
+                    if (quitIsPressed == true)
                     {
-                        connectButton.Text = "EI YHTEYTTÄ";
-                        connectButton.BackColor = Color.MistyRose;
-                        startButton.Enabled = false;
                         textBox.Text = "";
-                        if (quitIsPressed == true)
-                        {
-                            textBox.Text = "";
-                        }
-                        else
-                        {
-                            MessageBox.Show("* Yhteys Arduinoon on katkennut\n\n* Käynnistä ohjelma uudelleen", "Virhe");
-                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("* Yhteys Arduinoon on katkennut\n\n* Käynnistä ohjelma uudelleen", "Virhe");
                     }
                 }
             }

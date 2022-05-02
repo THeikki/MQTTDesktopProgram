@@ -10,3 +10,15 @@ C:\Users\Omistaja\MQTTDesktopProgram\MQTTDesktopProgram\obj\Debug\MQTTDesktopPro
 C:\Users\Omistaja\MQTTDesktopProgram\MQTTDesktopProgram\obj\Debug\MQTTDesktopProgram.exe
 C:\Users\Omistaja\MQTTDesktopProgram\MQTTDesktopProgram\obj\Debug\MQTTDesktopProgram.pdb
 C:\Users\Omistaja\MQTTDesktopProgram\MQTTDesktopProgram\obj\Debug\MQTTDesktopProgram.csproj.AssemblyReference.cache
+C:\Users\HP\MQTTDesktopProgram\MQTTDesktopProgram\bin\Debug\MQTTDesktopProgram.exe.config
+C:\Users\HP\MQTTDesktopProgram\MQTTDesktopProgram\bin\Debug\MQTTDesktopProgram.exe
+C:\Users\HP\MQTTDesktopProgram\MQTTDesktopProgram\bin\Debug\MQTTDesktopProgram.pdb
+C:\Users\HP\MQTTDesktopProgram\MQTTDesktopProgram\bin\Debug\MQTTnet.dll
+C:\Users\HP\MQTTDesktopProgram\MQTTDesktopProgram\obj\Debug\MQTTDesktopProgram.csproj.AssemblyReference.cache
+C:\Users\HP\MQTTDesktopProgram\MQTTDesktopProgram\obj\Debug\MQTTDesktopProgram.Form1.resources
+C:\Users\HP\MQTTDesktopProgram\MQTTDesktopProgram\obj\Debug\MQTTDesktopProgram.Properties.Resources.resources
+C:\Users\HP\MQTTDesktopProgram\MQTTDesktopProgram\obj\Debug\MQTTDesktopProgram.csproj.GenerateResource.cache
+C:\Users\HP\MQTTDesktopProgram\MQTTDesktopProgram\obj\Debug\MQTTDesktopProgram.csproj.CoreCompileInputs.cache
+C:\Users\HP\MQTTDesktopProgram\MQTTDesktopProgram\obj\Debug\MQTTDesktopProgram.csproj.CopyComplete
+C:\Users\HP\MQTTDesktopProgram\MQTTDesktopProgram\obj\Debug\MQTTDesktopProgram.exe
+C:\Users\HP\MQTTDesktopProgram\MQTTDesktopProgram\obj\Debug\MQTTDesktopProgram.pdb
