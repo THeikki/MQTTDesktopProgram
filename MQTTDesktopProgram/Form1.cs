@@ -147,6 +147,11 @@ namespace MQTTDesktopProgram
                     else
                     {
                         MessageBox.Show("* Yhteys Arduinoon on katkennut\n\n* Käynnistä ohjelma uudelleen", "Virhe");
+                        if (serialPort != null)
+                        {
+                            serialPort.Dispose();
+                            serialPort.Close();
+                        }
                     }
                 }
             }
